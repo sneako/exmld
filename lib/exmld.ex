@@ -156,13 +156,18 @@ defmodule Exmld do
            state0,
            process_fn,
            opts \\ []) do
+    partition_opts = [
+      key: partition_key,
+      stages: opts[:num_stages] || System.schedulers_online(),
+      min_demand: opts[:min_demand] || 1,
+      max_demand: opts[:max_demand] || 500,
+      window: opts[:window] || Flow.Window.global(),
+      hash: opts[:partition_hash_fn]
+    ] |> Enum.filter(fn {_, v} -> v != nil end)
+
     flow
     |> Flow.flat_map(extract_items_fn)
-    |> Flow.partition(key: partition_key,
-                      stages: opts[:num_stages] || System.schedulers_online(),
-                      min_demand: opts[:min_demand] || 1,
-                      max_demand: opts[:max_demand] || 500,
-                      window: opts[:window] || Flow.Window.global())
+    |> Flow.partition(partition_opts)
     |> Flow.reduce(state0, process_fn)
   end
 
