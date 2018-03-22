@@ -31,7 +31,7 @@ defmodule Exmld.Mixfile do
   defp deps do
     [
       {:flow, "~> 0.12.0"},
-      {:erlmld, "~> 0.1.5"},
+      {:erlmld, git: "https://github.com/sneako/erlmld", ref: "standard-magic"},
       {:ex_doc, "~> 0.16", only: :dev, runtime: false}
     ]
   end
